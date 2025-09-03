@@ -1,10 +1,48 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # API routes
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
+      # Authentication
+      post 'auth/login', to: 'auth#login'
+      post 'auth/register', to: 'auth#register'
+
+      # Users
+      resources :users, only: [:index, :show, :update] do
+        collection do
+          get :me
+        end
+      end
+
+      # Projects
+      resources :projects do
+        member do
+          get 'export_tasks'
+        end
+
+        # Tasks nested under projects
+        resources :tasks, except: [:index]
+
+        # Project permissions
+        resources :project_permissions, only: [:index, :show, :create, :destroy]
+
+        # Deletion requests
+        resources :deletion_requests, only: [:create]
+      end
+
+      # Global tasks endpoints
+      get 'tasks', to: 'tasks#my_tasks'
+
+      # Admin deletion requests management
+      resources :deletion_requests, only: [:index, :show, :update, :destroy] do
+        collection do
+          get :my_requests
+        end
+      end
+    end
+  end
+
+  # Redirect root to API documentation (we can implement this of swagger or postman docs needed)
+  root to: redirect('/api/v1')
 end
