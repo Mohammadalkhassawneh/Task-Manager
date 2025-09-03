@@ -2,7 +2,8 @@ class Api::V1::UsersController < ApplicationController
   include Authenticable
 
   def index
-    admin_required!
+    return unless admin_required!
+    
     users = User.all
     render json: {
       users: users.map { |user| user_json(user) }

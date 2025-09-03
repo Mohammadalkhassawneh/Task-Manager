@@ -16,7 +16,7 @@ module Authenticable
       decoded = JwtService.decode(token)
       @current_user = User.find(decoded[:user_id])
     rescue StandardError
-      render json: { error: 'Invalid or expired token' }, status: :unauthorized
+      return render json: { error: 'Invalid or expired token' }, status: :unauthorized
     end
   end
 
@@ -29,6 +29,11 @@ module Authenticable
   end
 
   def admin_required!
-    render_unauthorized('Admin access required') unless current_user&.admin?
+    if current_user&.admin?
+      true
+    else
+      render_unauthorized('Admin access required')
+      false
+    end
   end
 end
