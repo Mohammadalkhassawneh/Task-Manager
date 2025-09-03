@@ -1,7 +1,7 @@
 class Project < ApplicationRecord
   belongs_to :user
 
-  enum visibility: { private: 0, shared: 1, public: 2 }
+  enum :visibility, { private_access: 0, shared: 1, public_access: 2 }
 
   validates :name, presence: true
   validates :description, presence: true
@@ -15,9 +15,9 @@ class Project < ApplicationRecord
   def accessible_by?(user)
     return false unless user
 
-    user.admin? || 
-    self.user == user || 
-    public? || 
+    user.admin? ||
+    self.user == user ||
+    public_access? ||
     (shared? && permitted_users.include?(user))
   end
 end
