@@ -1,0 +1,529 @@
+{
+  "info": {
+    "name": "Task Management API",
+    "description": "Comprehensive API for task and project management with role-based access control",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auth\": {\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"role\": \"user\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful Registration",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"auth\": {\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"role\": \"user\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/auth/register",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "auth", "register"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0LCJleHAiOjE3MjU1NzQ0MTV9.example_token\",\n  \"user\": {\n    \"id\": 4,\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"role\": \"user\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auth\": {\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"auth\": {\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/auth/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "auth", "login"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE3MjU1NzQzOTV9.example_token\",\n  \"user\": {\n    \"id\": 2,\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"role\": \"user\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "me"]
+            }
+          }
+        },
+        {
+          "name": "List All Users (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "List Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects?page=1&per=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "projects"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Projects List",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/projects?page=1&per=10",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "projects"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"projects\": [\n    {\n      \"id\": 1,\n      \"name\": \"Website Redesign\",\n      \"description\": \"Complete redesign of the company website with modern UI/UX\",\n      \"visibility\": \"public_access\",\n      \"user_id\": 2,\n      \"user_name\": \"John Doe\",\n      \"created_at\": \"2025-09-04T21:50:28.521Z\",\n      \"updated_at\": \"2025-09-04T21:50:28.521Z\"\n    }\n  ],\n  \"pagination\": {\n    \"current_page\": 1,\n    \"per_page\": 10,\n    \"total_pages\": 1,\n    \"total_count\": 5\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"project\": {\n    \"name\": \"New Project\",\n    \"description\": \"Description of the new project\",\n    \"visibility\": \"shared\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "projects"]
+            }
+          }
+        },
+        {
+          "name": "Get Project Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "projects", "1"]
+            }
+          }
+        },
+        {
+          "name": "Export Project Tasks (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/1/export_tasks",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "projects", "1", "export_tasks"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "My Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tasks?page=1&per=10&status=pending",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tasks"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"task\": {\n    \"title\": \"New Task\",\n    \"description\": \"Task description\",\n    \"status\": \"pending\",\n    \"priority\": \"high\",\n    \"due_date\": \"2025-09-15\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/1/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "projects", "1", "tasks"]
+            }
+          }
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"task\": {\n    \"status\": \"completed\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/1/tasks/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "projects", "1", "tasks", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Project Permissions",
+      "item": [
+        {
+          "name": "List Project Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/1/project_permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "projects", "1", "project_permissions"]
+            }
+          }
+        },
+        {
+          "name": "Grant Project Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"project_permission\": {\n    \"user_id\": 3,\n    \"permission_type\": \"write\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/1/project_permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "projects", "1", "project_permissions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deletion Requests",
+      "item": [
+        {
+          "name": "Request Project Deletion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deletion_request\": {\n    \"reason\": \"Project is no longer needed and taking up space\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/1/deletion_requests",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "projects", "1", "deletion_requests"]
+            }
+          }
+        },
+        {
+          "name": "List All Deletion Requests (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/deletion_requests?page=1&per=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "deletion_requests"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Approve/Reject Deletion Request (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deletion_request\": {\n    \"status\": \"approved\",\n    \"admin_notes\": \"Approved as requested. Project was indeed no longer needed.\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/deletion_requests/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "deletion_requests", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-extract token from login/register responses",
+          "if (pm.response && pm.response.json && pm.response.json().token) {",
+          "    pm.collectionVariables.set('auth_token', pm.response.json().token);",
+          "    if (pm.response.json().user && pm.response.json().user.role === 'admin') {",
+          "        pm.collectionVariables.set('admin_token', pm.response.json().token);",
+          "    }",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-extract token from login/register responses",
+          "if (pm.response.json && pm.response.json().token) {",
+          "    pm.collectionVariables.set('auth_token', pm.response.json().token);",
+          "    if (pm.response.json().user && pm.response.json().user.role === 'admin') {",
+          "        pm.collectionVariables.set('admin_token', pm.response.json().token);",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ]
+}
