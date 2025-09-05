@@ -123,7 +123,7 @@ class Api::V1::DeletionRequestsController < ApplicationController
   end
 
   def deletion_request_params
-    params.require(:deletion_request).permit(:reason)
+    params.require(:deletion_request).permit(:reason, :status)
   end
 
   def update_params
