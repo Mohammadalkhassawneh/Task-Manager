@@ -26,6 +26,10 @@ gem "jwt"
 # Pagination
 gem "kaminari"
 
+# Swagger API documentation
+gem "rswag-api"
+gem "rswag-ui"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
@@ -52,6 +56,9 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "rspec-rails"
   gem "shoulda-matchers"
+
+  # Swagger development and test support
+  gem "rswag-specs"
 end
 
 

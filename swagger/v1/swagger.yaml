@@ -1,0 +1,585 @@
+---
+openapi: 3.0.1
+info:
+  title: Task Management API
+  version: v1
+  description: |-
+    A collaborative task management system with JWT authentication, project management, and role-based access control.
+
+    **Live API Testing:**
+    This Swagger UI connects to your live development database. All operations create, read, update, and delete real data.
+
+  contact:
+    name: Task Management API
+    url: https://github.com/Mohammadalkhassawneh/Task-Manager
+paths:
+  "/api/v1/auth/register":
+    post:
+      summary: Register a new user
+      tags:
+      - Authentication
+      description: Creates a new user account and returns a JWT token
+      parameters: []
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTcwMzAwMDB9.example_jwt_token_here
+                    description: JWT token for authentication - use this in Authorization
+                      header as "Bearer <token>"
+                  user:
+                    "$ref": "#/components/schemas/User"
+                example:
+                  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTcwMzAwMDB9.example_jwt_token_here
+                  user:
+                    id: 1
+                    name: John Doe
+                    email: john@example.com
+                    role: user
+                    created_at: '2025-09-05T10:00:00.000Z'
+                    updated_at: '2025-09-05T10:00:00.000Z'
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                auth:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: John Doe
+                    email:
+                      type: string
+                      example: john@example.com
+                    password:
+                      type: string
+                      example: password123
+                    role:
+                      type: string
+                      enum:
+                      - user
+                      - admin
+                      example: user
+                  required:
+                  - name
+                  - email
+                  - password
+                  - role
+              required:
+              - auth
+  "/api/v1/auth/login":
+    post:
+      summary: Authenticate user
+      tags:
+      - Authentication
+      description: Authenticates a user and returns a JWT token
+      parameters: []
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTcwMzAwMDB9.example_jwt_token_here
+                    description: JWT token for authentication - use this in Authorization
+                      header as "Bearer <token>"
+                  user:
+                    "$ref": "#/components/schemas/User"
+                example:
+                  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTcwMzAwMDB9.example_jwt_token_here
+                  user:
+                    id: 1
+                    name: John Doe
+                    email: john@example.com
+                    role: user
+                    created_at: '2025-09-05T10:00:00.000Z'
+                    updated_at: '2025-09-05T10:00:00.000Z'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                auth:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: john@example.com
+                    password:
+                      type: string
+                      example: password123
+                  required:
+                  - email
+                  - password
+              required:
+              - auth
+  "/api/v1/projects":
+    get:
+      summary: List projects
+      tags:
+      - Projects
+      description: Retrieve all accessible projects with pagination
+      security:
+      - Bearer: []
+      parameters:
+      - name: page
+        in: query
+        description: Page number
+        required: false
+        schema:
+          type: integer
+      - name: per
+        in: query
+        description: Items per page
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Projects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/Project"
+                  pagination:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      per_page:
+                        type: integer
+                      total_pages:
+                        type: integer
+                      total_count:
+                        type: integer
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    post:
+      summary: Create project
+      tags:
+      - Projects
+      description: Create a new project
+      security:
+      - Bearer: []
+      parameters: []
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                    "$ref": "#/components/schemas/Project"
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Website Redesign
+                    description:
+                      type: string
+                      example: Complete redesign of company website
+                    visibility:
+                      type: string
+                      enum:
+                      - private_access
+                      - shared
+                      - public_access
+                      example: shared
+                  required:
+                  - name
+                  - visibility
+              required:
+              - project
+  "/api/v1/projects/{id}":
+    get:
+      summary: Get project details
+      tags:
+      - Projects
+      description: Retrieve a specific project with its tasks
+      security:
+      - Bearer: []
+      parameters:
+      - name: id
+        in: path
+        description: Project ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Project retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                    "$ref": "#/components/schemas/Project"
+                  tasks:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/Task"
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    put:
+      summary: Update project
+      tags:
+      - Projects
+      description: Update a project
+      security:
+      - Bearer: []
+      parameters:
+      - name: id
+        in: path
+        description: Project ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                    "$ref": "#/components/schemas/Project"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    visibility:
+                      type: string
+                      enum:
+                      - private_access
+                      - shared
+                      - public_access
+              required:
+              - project
+    delete:
+      summary: Delete project
+      tags:
+      - Projects
+      description: Delete a project (Admin only)
+      security:
+      - Bearer: []
+      parameters:
+      - name: id
+        in: path
+        description: Project ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Project deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: Admin access required
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/users/me":
+    get:
+      summary: Get current user profile
+      tags:
+      - Users
+      description: Retrieve the authenticated user profile
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    "$ref": "#/components/schemas/User"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/users":
+    get:
+      summary: List all users
+      tags:
+      - Users
+      description: Retrieve all users (Admin only)
+      security:
+      - Bearer: []
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/User"
+        '401':
+          description: Admin access required
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/users/{id}":
+    put:
+      summary: Update user profile
+      tags:
+      - Users
+      description: Update user profile (own profile or admin can update any)
+      security:
+      - Bearer: []
+      parameters:
+      - name: id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    "$ref": "#/components/schemas/User"
+        '401':
+          description: Unauthorized - can only update own profile
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Updated Name
+                    email:
+                      type: string
+                      example: updated@example.com
+                    role:
+                      type: string
+                      enum:
+                      - user
+                      - admin
+                      description: Admin only
+              required:
+              - user
+servers:
+- url: http://localhost:3000
+  description: Development server (live database)
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "JWT token for API authentication. \n\n**How to get a token:**\n1.
+        Use POST /api/v1/auth/register or POST /api/v1/auth/login\n2. Copy the \"token\"
+        value from the response\n3. Click \"Authorize\" button above\n4. Enter: Bearer
+        <your_token>\n\n**Example:** Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTcwMzAwMDB9.example_token"
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+          - user
+          - admin
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        visibility:
+          type: string
+          enum:
+          - private_access
+          - shared
+          - public_access
+        user_id:
+          type: integer
+        user_name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - in_progress
+          - completed
+          - cancelled
+        priority:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+          - urgent
+        due_date:
+          type: string
+          format: date
+        user_id:
+          type: integer
+        project_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: array
+          items:
+            type: string
+    AuthRequest:
+      type: object
+      properties:
+        auth:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+            name:
+              type: string
+            role:
+              type: string
+              enum:
+              - user
+              - admin
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          "$ref": "#/components/schemas/User"
+security:
+- Bearer: []

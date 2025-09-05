@@ -4,6 +4,7 @@ A lightweight Task Management API built with Ruby on Rails. Provides user authen
 
 Quick links
 - API base: `http://localhost:3000/api/v1`
+- **Swagger UI**: `http://localhost:3000/api-docs`
 - Postman collection: `postman/Task_Management_API.postman_collection.json`
 
 Prerequisites
@@ -52,6 +53,13 @@ Common Endpoints (summary)
 
 Postman
 Import the collection and environment from the `postman/` folder. Tokens are auto-extracted.
+
+Swagger Documentation
+Interactive API documentation is available at `http://localhost:3000/api-docs` when the server is running.
+- Browse all endpoints with request/response examples
+- Test API calls directly from the browser
+- View detailed schema definitions
+- JWT authentication supported in the UI
 
 Notes
 - JWT tokens are stateless and expire per server config.
